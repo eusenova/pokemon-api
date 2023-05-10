@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js"></script>
+    <title>Pokedex</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-nav">
+                <h1 class="header__logo">Pokedex</h1>
+                <ul class="header-nav__list">
+                    <li class="header-nav__list-item">
+                        <a href="/" class="header-nav__list-link header-nav__list-link--active">Search</a>
+                    </li>
+                    <li class="header-nav__list-item">
+                        <a href="/favourites.html" class="header-nav__list-link">Favourites</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="search-bar">
+            <div>
+                <div>
+                    Search for Pokemons
+                </div>
+                <input type="text">
+            
+            </div>
+            <div>
+                <div>
+                    Sort order
+                </div>
+                <select name="sort" id="sort">
+                    <option value="volvo">a-z</option>
+                    <option value="saab">z-a</option>
+                </select>
+            </div>
+            <div>
+                <div>
+                    Per page
+                </div>
+                <input type="number" min="1" max="20">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
