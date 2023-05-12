@@ -12,6 +12,14 @@ body {
     padding: 0;
 }
 
+.fa {
+    cursor: pointer;
+}
+
+.checked {
+    color: orange;
+}
+
 .pagination{
     display: flex;
     justify-content: center;
@@ -40,6 +48,11 @@ body {
     margin: 0 auto;
     padding: 0 20px;
     max-width: 1200px;
+}
+
+.favourites {
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .fire {

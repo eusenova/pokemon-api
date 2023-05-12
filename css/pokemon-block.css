@@ -1,4 +1,4 @@
-.pokemon-block {
+.pokemon-block , .favourites{
     display: flex;
 	flex-wrap: wrap;
     justify-content: center;
@@ -16,9 +16,7 @@
 }
 
 .pokemon-card__img-container {
-    
 	border-radius: 5px;
-    background: white;
 	width: 180px;
     margin: auto 0;
 }

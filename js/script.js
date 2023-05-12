@@ -1,5 +1,6 @@
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 const pokemonBlock = document.querySelector('.pokemon-block');
+const favourite = document.querySelector('.fa');
 const input = document.getElementById('search');
 const select = document.getElementById('select');
 const prev = document.getElementById('prev-btn');
@@ -9,6 +10,21 @@ let pokemons = [];
 let search;
 let pageStart = 0;
 let pageEnd = 10;
+
+const favouriteHandler = id => {
+    let arr =[];
+    if(localStorage.getItem('favourite')){
+        if(JSON.parse(localStorage.getItem('favourite')).includes(id)){
+            arr = JSON.parse(localStorage.getItem('favourite')).filter(i=>i!==id);
+        }else{
+            arr = [...JSON.parse(localStorage.getItem('favourite')),id];
+        }
+        localStorage.setItem('favourite', JSON.stringify(arr));
+        makePokemonBlock();
+    }else{
+        localStorage.setItem('favourite',JSON.stringify(arr));
+    }
+};
 
 const getPokemons = async (url) => {
     try {
@@ -20,6 +36,7 @@ const getPokemons = async (url) => {
         pokemonBlock.innerHTML = '<h3>Network problems</h3>'
     }
 };
+
 const makePokemonBlock = async () => {
     pokemonBlock.innerHTML = '<span class="loader"></span>';
     search = pokemons.filter(i=> i.name.includes(input.value.toLowerCase())).slice(pageStart,pageEnd);
@@ -33,7 +50,7 @@ const makePokemonBlock = async () => {
         if(index === 0){
             pokemonBlock.innerHTML='';
         }
-        await getPokemonData(search[index].name)
+        await getPokemonData(search[index].name);
     }
     select.value = 'id asc';
 };
@@ -124,32 +141,31 @@ const getPokemonData = async (name) => {
     const types = type.join();
     const names = data['name'][0].toUpperCase() + data['name'].slice(1);
     pokemonCard.classList.add(type[0]);
-    if(data.sprites.front_default){
-        pokemonCard.innerHTML = `
-        <div class="pokemon-card__img-container">
-            <img src="${data.sprites.front_default}" alt="${names}" />
-        </div>
-        <div class="pokemon-card__info">
-            <span class="pokemon-card__number">#${data.id.toString().padStart(4, '0')}</span>
-            <h3 class="pokemon-card__name">${names}</h3>
-            <div><small>EXP: <span>${data.base_experience}</span></small></div>
-            <div><small>Main type: <span>${type[0]}</span></small></div>
-            <div><small>Types: <span>${types}</span></small></div>
-        </div>`;
-    } else {
-        pokemonCard.innerHTML = `
-        <div class="pokemon-card__img-container">
-            <img src="../images/pokeball.png"}" alt="${names}" />
-        </div>
-        <div class="pokemon-card__info">
-            <span class="pokemon-card__number">#${data.id.toString().padStart(4, '0')}</span>
-            <h3 class="pokemon-card__name">${names}</h3>
-            <div><small>EXP: <span>${data.base_experience}</span></small></div>
-            <div><small>Main type: <span>${type[0]}</span></small></div>
-            <div><small>Types: <span>${types}</span></small></div>
-        </div>`;
+    let image;
+    let favourite;
+    if(localStorage.getItem('favourite')&&JSON.parse(localStorage.getItem('favourite')).includes(data.id)){
+        favourite=`<span onclick='favouriteHandler(${data.id});' class="fa fa-star checked"></span>`;
+    }else{
+        favourite=`<span onclick='favouriteHandler(${data.id});' class="fa fa-star"></span>`;
     }
+    if(data.sprites.front_default){
+        image=`<img src="${data.sprites.front_default}" alt="${names}" />`;
+    } else {
+        image = `<img src="../images/pokeball.png"}" alt="${names}" />`;
+    }
+    pokemonCard.innerHTML = `
+        <div class="pokemon-card__img-container">
+            ${image}
+        </div>
+        <div class="pokemon-card__info">
+            <span class="pokemon-card__number">#${data.id.toString().padStart(4, '0')}</span>
+            <h3 class="pokemon-card__name">${names}</h3>
+            ${favourite}
+            <div><small>EXP: <span>${data.base_experience}</span></small></div>
+            <div><small>Main type: <span>${type[0]}</span></small></div>
+            <div><small>Types: <span>${types}</span></small></div>
+        </div>`;
     pokemonBlock.append(pokemonCard);
-}
+};
 
 getPokemons(url);
