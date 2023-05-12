@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/style.css">
-    <script src="./js/script.js"></script>
     <title>Pokedex</title>
 </head>
 <body>
@@ -26,29 +25,23 @@
     </header>
     <div class="container">
         <div class="search-bar">
-            <div>
-                <div>
-                    Search for Pokemons
-                </div>
-                <input type="text">
-            
+            <div class="search-bar__item">
+                <div class="search-bar__item-label">Search for Pokemons</div>
+                <input type="text" id="search">
             </div>
-            <div>
-                <div>
-                    Sort order
-                </div>
-                <select name="sort" id="sort">
-                    <option value="volvo">a-z</option>
-                    <option value="saab">z-a</option>
+            <div class="search-bar__item">
+                <div class="search-bar__item-label">Order by</div>
+                <select name="order" id="order">
+                    <option value="id asc">id asc</option>
+                    <option value="id desc">id desc</option>
+                    <option value="az">a-z</option>
+                    <option value="za">z-a</option>
                 </select>
             </div>
-            <div>
-                <div>
-                    Per page
-                </div>
-                <input type="number" min="1" max="20">
-            </div>
+        </div>
+        <div class="pokemon-block">
         </div>
     </div>
+    <script src="./js/script.js"></script>
 </body>
 </html>

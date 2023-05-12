@@ -1,5 +1,40 @@
 .search-bar {
     padding: 20px 0;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+}
+
+.search-bar input {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.search-bar select {
+    padding: 11px;
+    appearance: none;
+    border-radius: 5px;
+}
+
+.search-bar__item {
+    margin-bottom: 15px;
+}
+
+.search-bar__item:first-child {
+    flex-basis: 50%;
+}
+
+.search-bar__item-label {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 400px) {
+    .search-bar {
+        justify-content: center;
+    }
+    .search-bar__item:first-child {
+        flex-basis: 100%;
+        text-align: center;
+    }
 }
