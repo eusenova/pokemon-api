@@ -12,6 +12,30 @@ body {
     padding: 0;
 }
 
+.pagination{
+    display: flex;
+    justify-content: center;
+}
+
+.pagination a {
+    text-decoration: none;
+    background: black;
+    padding: 8px 10px;
+    color: white;
+    margin-top: 1px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.pagination a:hover {
+    color: black;
+    background: white;
+}
+
+.pagination a:first-child {
+    margin-right: 16px;
+}
+
 .container {
     margin: 0 auto;
     padding: 0 20px;
