@@ -1,7 +1,11 @@
-.pokemon-block , .favourites{
+.pokemon-block , .favourites, .pokemon-wrapper{
     display: flex;
 	flex-wrap: wrap;
     justify-content: center;
+}
+
+.pokemon-wrapper {
+    padding: 15px 0;
 }
 
 .pokemon-card {

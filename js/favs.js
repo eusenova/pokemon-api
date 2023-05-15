@@ -2,33 +2,35 @@ const url = 'https://pokeapi.co/api/v2/pokemon/';
 const pokemonBlock = document.querySelector('.favourites');
 const favourite = document.querySelector('.fa');
 
-let search;
-
 const favouriteHandler = id => {
     let arr =[];
-    if(localStorage.getItem('favourite')){
-        if(JSON.parse(localStorage.getItem('favourite')).includes(id)){
-            arr = JSON.parse(localStorage.getItem('favourite')).filter(i=>i!==id);
+    const favs = localStorage.getItem('favourite');
+    const favsArr = JSON.parse(localStorage.getItem('favourite'))
+    if(favs){
+        if(favsArr.includes(id)){
+            arr = favsArr.filter(i=>i!==id);
         }else{
-            arr = [...JSON.parse(localStorage.getItem('favourite')),id];
+            arr = [...favsArr,id];
         }
         localStorage.setItem('favourite', JSON.stringify(arr));
         makePokemonBlock();
     }else{
-        localStorage.setItem('favourite',JSON.stringify(arr));
+        console.log(9);
+        localStorage.setItem('favourite',JSON.stringify([id]));
+        makePokemonBlock();
     }
 };
 
 const makePokemonBlock = async () => {
+    const favs = localStorage.getItem('favourite');
+    const favsArr = JSON.parse(localStorage.getItem('favourite'));
     pokemonBlock.innerHTML = '<span class="loader"></span>';
-    if(localStorage.getItem('favourite')
-    &&JSON.parse(localStorage.getItem('favourite')).length){
-        search = JSON.parse(localStorage.getItem('favourite'));
-        for (let index = 0; index < search.length; index++) {
+    if(favs&&favsArr.length){
+        for (let index = 0; index < favsArr.length; index++) {
             if(index === 0){
                 pokemonBlock.innerHTML='';
             }
-            await getPokemonData(search[index]);
+            await getPokemonData(favsArr[index]);
         }
     }else{
         pokemonBlock.innerHTML = '<h3>No favourites yet</h3>';
@@ -36,6 +38,8 @@ const makePokemonBlock = async () => {
 };
 
 const getPokemonData = async (name) => {
+    const favs = localStorage.getItem('favourite');
+    const favsArr = JSON.parse(localStorage.getItem('favourite'));
     const response = await fetch(url+name);
     const data = await response.json();
     const pokemonCard = document.createElement('div');
@@ -46,7 +50,7 @@ const getPokemonData = async (name) => {
     pokemonCard.classList.add(type[0]);
     let image;
     let favourite;
-    if(localStorage.getItem('favourite')&&JSON.parse(localStorage.getItem('favourite')).includes(data.id)){
+    if(favs&&favsArr.includes(data.id)){
         favourite=`<span onclick='favouriteHandler(${data.id});' class="fa fa-star checked"></span>`;
     }else{
         favourite=`<span onclick='favouriteHandler(${data.id});' class="fa fa-star"></span>`;

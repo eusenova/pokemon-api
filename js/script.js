@@ -1,28 +1,35 @@
 const url = 'https://pokeapi.co/api/v2/pokemon/';
-const pokemonBlock = document.querySelector('.pokemon-block');
-const favourite = document.querySelector('.fa');
+const pokemonBlock = document.querySelector('.pokemon-wrapper');
 const input = document.getElementById('search');
 const select = document.getElementById('select');
 const prev = document.getElementById('prev-btn');
 const next = document.getElementById('next-btn');
 
 let pokemons = [];
+let pokemonsWrapper;
 let search;
 let pageStart = 0;
 let pageEnd = 10;
 
 const favouriteHandler = id => {
     let arr =[];
-    if(localStorage.getItem('favourite')){
-        if(JSON.parse(localStorage.getItem('favourite')).includes(id)){
-            arr = JSON.parse(localStorage.getItem('favourite')).filter(i=>i!==id);
+    const favs = localStorage.getItem('favourite');
+    const favsArr = JSON.parse(localStorage.getItem('favourite'));
+    if(favs){
+        if(favsArr.includes(id)){
+            arr = favsArr.filter(i=>i!==id);
+            console.log(1);
         }else{
-            arr = [...JSON.parse(localStorage.getItem('favourite')),id];
+            arr = [...favsArr,id];
+            console.log(id);
         }
         localStorage.setItem('favourite', JSON.stringify(arr));
         makePokemonBlock();
     }else{
-        localStorage.setItem('favourite',JSON.stringify(arr));
+        console.log(3);
+
+        localStorage.setItem('favourite',JSON.stringify([id]));
+        makePokemonBlock();
     }
 };
 
@@ -46,11 +53,14 @@ const makePokemonBlock = async () => {
     }else if(search.length === 0){
         pokemonBlock.innerHTML = '<h3>Not found</h3>'
     }
+    pokemonsWrapper = document.createElement('div');
+    pokemonsWrapper.className = 'pokemon-block';
     for (let index = 0; index < search.length; index++) {
-        if(index === 0){
-            pokemonBlock.innerHTML='';
-        }
         await getPokemonData(search[index].name);
+        if(index === search.length-1){
+            pokemonBlock.innerHTML='';
+            pokemonBlock.append(pokemonsWrapper);
+        }
     }
     select.value = 'id asc';
 };
@@ -71,60 +81,69 @@ const showNext = () => {
     }
 };
 
-const onSearch = async (e) => {
+const onSearch = async () => {
     pageStart = 0;
     pageEnd = 10;
-    makePokemonBlock();
+    await makePokemonBlock();
 };
 
-const onSort = async (e) => {
+const onSort = async () => {
     if(search){
-    if(select.value === 'az'){
-        search = search.sort(function (a, b) {
-            if (a.name < b.name) {
-              return -1;
-            }
-            if (a.name > b.name) {
-              return 1;
-            }
-            return 0;
-          });
-    }else if(select.value === 'za'){
-        search = search.sort(function (a, b) {
-            if (a.name > b.name) {
-              return -1;
-            }
-            if (a.name < b.name) {
-              return 1;
-            }
-            return 0;
-          });
-    }else if(select.value === 'id desc'){
-        search = search.sort(function (a, b) {
-            const aId = a.url.split('/');
-            const bId = b.url.split('/');
-            return +bId[bId.length-2] - +aId[aId.length-2];
-            ;
-          });
-    }else if(select.value === 'id asc'){
-        search = search.sort(function (a, b) {
-            const aId = a.url.split('/');
-            const bId = b.url.split('/');
-            if (Number(aId[aId.length-2]) < Number(bId[bId.length-2]) ){
-              return -1;
-            }
-            if (Number(aId[aId.length-2]) > Number(bId[bId.length-2])) {
-              return 1;
-            }
-            return 0;
-          });
-    }
+        switch (select.value) {
+            case 'az':
+                search = search.sort(function (a, b) {
+                    if (a.name < b.name) {
+                      return -1;
+                    }
+                    if (a.name > b.name) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                break;
+            case 'za':
+                search = search.sort(function (a, b) {
+                    if (a.name > b.name) {
+                      return -1;
+                    }
+                    if (a.name < b.name) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                break;
+            case 'id desc':
+                search = search.sort(function (a, b) {
+                    const aId = a.url.split('/');
+                    const bId = b.url.split('/');
+                    return +bId[bId.length-2] - +aId[aId.length-2];
+                    ;
+                  });
+                break;
+            case 'id asc':
+                search = search.sort(function (a, b) {
+                    const aId = a.url.split('/');
+                    const bId = b.url.split('/');
+                    if (Number(aId[aId.length-2]) < Number(bId[bId.length-2]) ){
+                      return -1;
+                    }
+                    if (Number(aId[aId.length-2]) > Number(bId[bId.length-2])) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                break;
+            default:
+                break;
+        }
     for (let index = 0; index < search.length; index++) {
         if(index === 0){
             pokemonBlock.innerHTML='';
+            pokemonsWrapper.innerHTML='';
         }
-        await getPokemonData(search[index].name)
+        await getPokemonData(search[index].name);
     }}
+    pokemonBlock.append(pokemonsWrapper);
 };
 
 select.addEventListener('change', onSort);
@@ -133,6 +152,8 @@ prev.addEventListener('click', showPrev);
 next.addEventListener('click', showNext);
 
 const getPokemonData = async (name) => {
+    const favs = localStorage.getItem('favourite');
+    const favsArr = JSON.parse(localStorage.getItem('favourite'));
     const response = await fetch(url+name);
     const data = await response.json();
     const pokemonCard = document.createElement('div');
@@ -143,7 +164,7 @@ const getPokemonData = async (name) => {
     pokemonCard.classList.add(type[0]);
     let image;
     let favourite;
-    if(localStorage.getItem('favourite')&&JSON.parse(localStorage.getItem('favourite')).includes(data.id)){
+    if(favs&&favsArr.includes(data.id)){
         favourite=`<span onclick='favouriteHandler(${data.id});' class="fa fa-star checked"></span>`;
     }else{
         favourite=`<span onclick='favouriteHandler(${data.id});' class="fa fa-star"></span>`;
@@ -165,7 +186,7 @@ const getPokemonData = async (name) => {
             <div><small>Main type: <span>${type[0]}</span></small></div>
             <div><small>Types: <span>${types}</span></small></div>
         </div>`;
-    pokemonBlock.append(pokemonCard);
+    pokemonsWrapper.append(pokemonCard);
 };
 
 getPokemons(url);
